@@ -18,7 +18,7 @@ Here are some basic, step-by-step instructions on how I got SDL2 running in Go w
 
 ## Setup on Windows 64 bit
 
-- Install VSCode (https://code.visualstudio.com/docs/languages/go)
+- Install VSCode (https://code.visualstudio.com/download)
 - Download GO language from https://go.dev/dl/ (Windows version!)
 - Install MinGW-W64 installer (easiest method) (https://github.com/nixman/mingw-builds-binaries?tab=readme-ov-file)
     - Install to 'C:/' root path with the 64bit version
