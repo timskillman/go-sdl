@@ -12,7 +12,7 @@ Very simply I wanted to get SDL2 up and running using Go and found it wasn't str
 Windows and VSCode probably isn't the best environment for writing Go-SDL programs but it's probably the most accessible.
 Also, I may work on further examples that run on the Raspberry Pi at a later date.
 
-Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their amazing work on go-sdl2
+Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their amazing work on [go-sdl2](https://github.com/veandco/go-sdl2)
 
 Here are some basic, step-by-step instructions on how I got SDL2 running in Go with VSCode ...
 
@@ -43,13 +43,12 @@ Here are some basic, step-by-step instructions on how I got SDL2 running in Go w
 
 - Create a 'go' folder in your user/<name> folder
 - Create an 'SDLtest' folder in the 'go' folder
-- Create a 'SDLtest.go' file in the 'SDLtest' folder with the following contents ...
-  
 - **IMPORTANT!** You will need the SDL2.dll found in the 'SDL-devel-2.30.6-mingw.zip' file you downloaded earlier
   Drop the dll into your SDLtest folder otherwise your program won't work.
   Alternatively drop SDL2.dll into your Windows/System32 folder so it's always accessible
+- Create an 'SDLtest.go' file in the 'SDLtest' folder with the following contents ...
   
-```
+```Go
 package main
 
 import (
