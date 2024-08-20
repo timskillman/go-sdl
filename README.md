@@ -26,11 +26,11 @@ Here are some basic, step-by-step instructions on how I got SDL2 running in Go w
 - Set the PATH variable
     - Go to Windows search bar and find 'environment variables' (then select Environment Variables button from the window)
     - Select 'Path' and 'Edit'
-    - Add 'C:\mingw64\bin' as a new path variable
+    - Add 'C:\mingw64\bin' as a new path variable and save
     - Open a new command prompt from the search bar (type 'cmd' and enter)
     - Check that gcc, g++ and gdb exist by adding '--version' after them e.g. 'gcc --version'
       This should return the version number of each to confirm that the C compilers are working
-- Download SDL2-devel-2.30.6.mingw.zip (or latest version) and decompress
+- Download SDL2-devel-2.30.6.mingw.zip (or latest version) and unzip 
     - Drag the x86_64-w64-mingw32 and i686-w64-mingw32 folders into the 'C:/mingw64' folder
 - Start VSCode
   - Add extensions (4x cube icon on left bar)
@@ -38,8 +38,17 @@ Here are some basic, step-by-step instructions on how I got SDL2 running in Go w
     - Install C/C++ 
 
 
-Write a basic SDL program in Go (taken from [Ve & Co's examples](https://github.com/veandco/go-sdl2-examples/tree/master/examples))
+### Write a basic SDL program in Go 
+(based on [Ve & Co's examples](https://github.com/veandco/go-sdl2-examples/tree/master/examples))
 
+- Create a 'go' folder in your user/<name> folder
+- Create an 'SDLtest' folder in the 'go' folder
+- Create a 'SDLtest.go' file in the 'SDLtest' folder with the following contents ...
+  
+- **IMPORTANT!** You will need the SDL2.dll found in the 'SDL-devel-2.30.6-mingw.zip' file you downloaded earlier
+  Drop the dll into your SDLtest folder otherwise your program won't work.
+  Alternatively drop SDL2.dll into your Windows/System32 folder so it's always accessible
+  
 ```
 package main
 
