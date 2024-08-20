@@ -3,13 +3,14 @@ Experiments with Golang and SDL2
 
 ## Why?
 
-Very simply I wanted to get SDL2 up and running using Go and found it wasn't straight forward using the following setup;
+Very simply I wanted to get SDL2 up and running using Go and found it wasn't straight forward (Aug '24) using the following setup;
 
 - Windows
 - VSCode
 - C++ support (for compiling C programs for Go)
   
 Windows and VSCode probably isn't the best environment for writing Go-SDL programs but it's probably the most accessible.
+Also, I may work on further examples that run on the Raspberry Pi at a later date.
 
 Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their amazing work on go-sdl2
 
