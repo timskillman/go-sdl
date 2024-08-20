@@ -63,7 +63,6 @@ const (
 
 var (
 	playerX, playerY = int32(WIDTH / 2), int32(HEIGHT / 2)
-	//running          = true
 ) 
 
 func main() {
