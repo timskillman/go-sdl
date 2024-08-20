@@ -43,7 +43,7 @@ Here are some basic, step-by-step instructions on how I got SDL2 running in Go w
 ### Write a basic SDL program in Go 
 (based on [Ve & Co's examples](https://github.com/veandco/go-sdl2-examples/tree/master/examples))
 
-- Create a 'go' folder in your user/<name> folder
+- Create a 'go' folder in your 'user/<name>' folder
 - Create an 'SDLtest' folder in the 'go' folder
 - **IMPORTANT!** You will need the SDL2.dll found in the 'SDL-devel-2.30.6-mingw.zip' file you downloaded earlier
   Drop the dll into your SDLtest folder otherwise your program won't work.
