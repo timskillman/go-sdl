@@ -14,6 +14,8 @@ Also, I may work on further examples that run on the Raspberry Pi at a later dat
 
 Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their amazing work on their [go-sdl2](https://github.com/veandco/go-sdl2) Go bindings and examples
 
+One more note, you may be asking why add C support? There are 1000's of C functions that can be used for Go, one of which I aim to implement such as the [Glutess library](https://github.com/mlabbe/glutess/tree/master).
+
 Here are some basic, step-by-step instructions on how I got SDL2 running in Go with VSCode with C support ...
 
 ## Setup on Windows 64 bit
