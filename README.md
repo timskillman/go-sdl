@@ -3,25 +3,32 @@ Experiments with Golang and SDL2
 
 ## Why?
 
-Very simply, I wanted to get SDL2 up and running using Go and found it wasn't straight forward after quite a few attempts using Windows and VSCode!
-Windows and VSCode probably isn't the best environment for writing Go-SDL programs but it's probably the most accessible and can be awkward to set up
+Very simply I wanted to get SDL2 up and running using Go and found it wasn't straight forward using the following setup;
 
-Here are some instructions on how I got SDL2 running in Go with VSCode ...
+- Windows
+- VSCode
+- C++ support (for compiling C programs for Go)
+  
+Windows and VSCode probably isn't the best environment for writing Go-SDL programs but it's probably the most accessible.
+
+Here are some basic, step-by-step instructions on how I got SDL2 running in Go with VSCode ...
 
 ## Setup
 
 - Install VSCode (https://code.visualstudio.com/docs/languages/go)
 - Download GO language from https://go.dev/dl/ (Windows version!)
-- Install MinGW-W64 installer (https://github.com/nixman/mingw-builds-binaries?tab=readme-ov-file)
-    - Install to C:/, 64bit version
-    - Go to search bar and enter and search for environment variables (then select Environment Variables button)
-    - Select 'Path' variable and 'Edit'
-    - Add C:\mingw64\path' as a new path variable
-    - Open a new command prompt from the search bar (type cmd)
+- Install MinGW-W64 installer (easiest method) (https://github.com/nixman/mingw-builds-binaries?tab=readme-ov-file)
+    - Install to 'C:/' root path with the 64bit version
+    - Check that 'C:/mingw64' exists before continuing
+- Set the PATH variable
+    - Go to Windows search bar and find 'environment variables' (then select Environment Variables button from the window)
+    - Select 'Path' and 'Edit'
+    - Add 'C:\mingw64\bin' as a new path variable
+    - Open a new command prompt from the search bar (type 'cmd' and enter)
     - Check that gcc, g++ and gdb exist by adding '--version' after them e.g. 'gcc --version'
-      This should return the version number of each
+      This should return the version number of each to confirm that the C compilers are working
 - Download SDL2-devel-2.30.6.mingw.zip (or latest version) and decompress
-    - Drag the x86_64-w64-mingw32 and i686-w64-mingw32 folders into the C:/mingw64 folder
+    - Drag the x86_64-w64-mingw32 and i686-w64-mingw32 folders into the 'C:/mingw64' folder
 - Start VSCode
   - Add extensions (4x cube icon on left bar)
     - Install Go extension
