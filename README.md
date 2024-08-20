@@ -12,7 +12,7 @@ Very simply I wanted to get SDL2 up and running using Go and found it wasn't str
 Windows and VSCode probably isn't the best environment for writing Go-SDL programs but it's probably the most accessible.
 Also, I may work on further examples that run on the Raspberry Pi at a later date.
 
-Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their amazing work on [go-sdl2](https://github.com/veandco/go-sdl2)
+Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their amazing work on their [go-sdl2](https://github.com/veandco/go-sdl2) bindings and examples
 
 Here are some basic, step-by-step instructions on how I got SDL2 running in Go with VSCode ...
 
