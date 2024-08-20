@@ -16,7 +16,7 @@ Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their a
 
 Here are some basic, step-by-step instructions on how I got SDL2 running in Go with VSCode ...
 
-## Setup
+## Setup on Windows 64 bit
 
 - Install VSCode (https://code.visualstudio.com/docs/languages/go)
 - Download GO language from https://go.dev/dl/ (Windows version!)
