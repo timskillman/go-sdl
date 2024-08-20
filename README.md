@@ -11,6 +11,8 @@ Very simply I wanted to get SDL2 up and running using Go and found it wasn't str
   
 Windows and VSCode probably isn't the best environment for writing Go-SDL programs but it's probably the most accessible.
 
+Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their amazing work on go-sdl2
+
 Here are some basic, step-by-step instructions on how I got SDL2 running in Go with VSCode ...
 
 ## Setup
