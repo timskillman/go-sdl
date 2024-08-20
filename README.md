@@ -137,7 +137,7 @@ func draw(window *sdl.Window, surface *sdl.Surface) {
 ```
 
 - **IMPORTANT!** Before you can the program, you will need the **SDL2.dll** found in the 'SDL-devel-2.30.6-mingw.zip' file you downloaded earlier.
-  Drop the **SDL2.dll*** into your *SDLtest* folder otherwise your program won't work.
+  Drop the **SDL2.dll** into your *SDLtest* folder otherwise your program won't work.
   Alternatively drop SDL2.dll into your *Windows/System32* folder so it's always accessible
   
 - Now 'Run & Debug' the program - there may be a few other things VSCode wants and it may take a while on first run - but the example should work!
