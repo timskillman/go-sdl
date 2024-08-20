@@ -14,7 +14,7 @@ Also, I may work on further examples that run on the Raspberry Pi at a later dat
 
 Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their amazing work on their [go-sdl2](https://github.com/veandco/go-sdl2) Go bindings and examples
 
-Here are some basic, step-by-step instructions on how I got SDL2 running in Go with VSCode ...
+Here are some basic, step-by-step instructions on how I got SDL2 running in Go with VSCode with C support ...
 
 ## Setup on Windows 64 bit
 
