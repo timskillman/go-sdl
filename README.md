@@ -37,7 +37,7 @@ Here are some basic, step-by-step instructions on how I got SDL2 running in Go w
     - Install C/C++ 
 
 
-Write a basic SDL program in Go
+Write a basic SDL program in Go (taken from [Ve & Co's examples](https://github.com/veandco/go-sdl2-examples/tree/master/examples))
 
 ```
 package main
