@@ -33,7 +33,7 @@ Here are some basic, step-by-step instructions on how I got SDL2 running in Go w
     - Open a new command prompt from the search bar (type 'cmd' and enter)
     - Check that gcc, g++ and gdb exist by adding '--version' after them e.g. 'gcc --version'
       This should return the version number of each to confirm that the C compilers are working
-- Download SDL2-devel-2.30.6.mingw.zip (or latest version) and unzip 
+- Download [SDL2-devel-2.30.6.mingw.zip](https://github.com/libsdl-org/SDL/releases) (or latest version) and unzip 
     - Drag the x86_64-w64-mingw32 and i686-w64-mingw32 folders into the 'C:/mingw64' folder
 - Start VSCode
   - Add extensions (4x cube icon on left bar)
