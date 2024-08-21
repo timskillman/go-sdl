@@ -39,6 +39,17 @@ Here are some basic, step-by-step instructions on how I got SDL2 running in Go w
     - Install Go extension
     - Install C/C++ 
 
+## Setup on Linux
+
+- Install VSCode from https://code.visualstudio.com/download
+- Install Go from a terminal window;
+  ```
+  $ sudo snap install go --classic
+  ```
+- Install SDL2
+  ```
+  $ sudo apt-get install libsdl2-dev
+  ```
 
 ### Write a basic SDL program in Go 
 (based on [Ve & Co's examples](https://github.com/veandco/go-sdl2-examples/tree/master/examples))
