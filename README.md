@@ -10,7 +10,7 @@ Very simply I wanted to get SDL2 up and running using Go and found it wasn't str
 - C++ support (for compiling C programs for Go)
   
 Windows and VSCode probably isn't the best environment for writing Go-SDL programs but it's probably the most accessible.
-Also, I may work on further examples that run on the Raspberry Pi at a later date.
+On linux this appear to be easier as gcc is part of the Linux OS.
 
 Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their amazing work on their [go-sdl2](https://github.com/veandco/go-sdl2) Go bindings and examples
 
@@ -51,7 +51,7 @@ Here are some basic, step-by-step instructions on how I got SDL2 running in Go w
   $ sudo apt-get install libsdl2-dev
   ```
 
-### Write a basic SDL program in Go 
+## Write a basic SDL program in Go 
 (based on [Ve & Co's examples](https://github.com/veandco/go-sdl2-examples/tree/master/examples))
 
 - Create a 'go' folder in your 'user/\<name\>' folder
@@ -146,8 +146,14 @@ func draw(window *sdl.Window, surface *sdl.Surface) {
 }
 ```
 
-- **IMPORTANT!** Before you can the program, you will need the **SDL2.dll** found in the 'SDL-devel-2.30.6-mingw.zip' file you downloaded earlier.
+## Running the programs
+
+- **Windows Only** Before you can the program, you will need the **SDL2.dll** found in the 'SDL-devel-2.30.6-mingw.zip' file you downloaded earlier.
   Drop the **SDL2.dll** into your *SDLtest* folder otherwise your program won't work.
   Alternatively drop SDL2.dll into your *Windows/System32* folder so it's always accessible
+
+  Note that installing SDL2 on Linux will run the program with no issues
   
-- Now 'Run & Debug' the program - there may be a few other things VSCode wants and it may take a while on first run - but the example should work!
+- Now 'Run & Debug' the program - there may be a few other things VSCode wants and it may take a while on first run.
+
+  You should see a purple square in an SDL2 window.  Press the cursor keys to move it around
