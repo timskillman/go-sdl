@@ -10,7 +10,8 @@ Very simply I wanted to get SDL2 up and running using Go and found it wasn't str
 - C++ support (for compiling C programs for Go)
   
 Windows and VSCode probably isn't the best environment for writing Go-SDL programs but it's probably the most accessible.
-On linux this appear to be easier as gcc is part of the Linux OS.
+
+On linux this is easier to setup as gcc is part of the Linux OS for the C++ support.
 
 Before I begin I want to thank [Ve & Co](https://github.com/veandco) for their amazing work on their [go-sdl2](https://github.com/veandco/go-sdl2) Go bindings and examples
 
