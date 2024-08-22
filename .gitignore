@@ -1,0 +1,4 @@
+/testSVGs/*.png
+/SVGtest/*.png
+.vscode/settings.json
+*.exe
