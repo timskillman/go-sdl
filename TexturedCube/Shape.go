@@ -171,6 +171,10 @@ func (c *Shape) DrawCuboid() {
 	gl.End()
 }
 
+type lathe struct {
+	vertTemp []float32
+}
+
 func (c *Shape) DrawLathe(inverted, endAngle, startAngle, rise float32, edges, uvtype uint32, pos vec3) {
 
 	gl.Begin(gl.QUADS)
