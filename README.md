@@ -2,10 +2,11 @@
 Experiments with Golang and SDL2
 
 ![alt text](https://github.com/timskillman/go-sdl/blob/main/Resources/images/screenshot.jpg "Shapes screenshot")
+*(Basic shapes animated with the Shapes project - on Windows and Raspberry Pi)*
 
 ## Why?
 
-Very simply I wanted to get SDL2 up and running using Go and found it wasn't straight forward (Aug '24) using the following setup;
+Very simply I wanted to get SDL2 up and running using Go using the following setup;
 
 - Windows
 - VSCode
