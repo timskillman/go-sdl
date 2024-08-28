@@ -1,4 +1,4 @@
-module goengine
+module github.com/timskillman/go-sdl/goengine
 
 go 1.22.5
 
