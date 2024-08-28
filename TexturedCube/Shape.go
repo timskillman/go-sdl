@@ -32,10 +32,13 @@ type Shape struct {
 	w         float32
 	h         float32
 	d         float32
+	edges     uint32
 	path      []vec2
+	verts     []float32
+	group     []Shape
 }
 
-func NewShape(name string, shape ShapeType, width, depth, height float32, position, rotation vec3, col uint32, textureFile string) Shape {
+func NewShape(name string, shape ShapeType, width, height, depth float32, position, rotation vec3, edges, col uint32, textureFile string) Shape {
 
 	tex := Texture{}
 	if textureFile != "" {
@@ -50,8 +53,10 @@ func NewShape(name string, shape ShapeType, width, depth, height float32, positi
 		d:         depth,
 		position:  position,
 		rotation:  rotation,
+		edges:     edges,
 		colour:    col,
 		texture:   tex,
+		verts:     nil,
 	}
 }
 
@@ -76,63 +81,54 @@ func (s *Shape) Draw() {
 
 	gl.BindTexture(gl.TEXTURE_2D, uint32(s.texture.id))
 
-	verts := []float32{}
-	sides := int(s.h)
-
 	switch s.shapeType {
 	case cuboidShape:
-		DrawVerts2(s.CreateCuboid())
-		return
+		DrawQuads(s.CreateCuboid())
 	case planeShape:
-		DrawVerts2(s.CreatePlane())
-		return
+		DrawQuads(s.CreatePlane())
 	case sphereShape:
-		verts = s.CreateSphere(s.w, 0, sides, false)
+		DrawSharedQuads(s.CreateSphere(), int(s.edges))
 	case cylinderShape:
-		verts = s.CreateTCone(s.w, s.w, s.d, sides)
+		DrawSharedQuads(s.CreateCylinder(), int(s.edges))
 	case coneShape:
-		verts = s.CreateTCone(0.001, s.w, s.d, sides)
+		DrawSharedQuads(s.CreateCone(), int(s.edges))
 	case tconeShape:
-		sides = 32
-		verts = s.CreateTCone(s.w, s.d, s.h, sides)
+		DrawSharedQuads(s.CreateTCone(), int(s.edges))
 	case tubeShape:
-		sides = 32
-		verts = s.CreateTube(s.w, s.d, s.h, sides)
+		DrawSharedQuads(s.CreateTube(), int(s.edges))
 	case torusShape:
-		verts = s.CreateTorus(s.w, s.d, sides, sides)
+		DrawSharedQuads(s.CreateTorus(), int(s.edges))
 	case latheShape:
 	case extrudeShape:
 	}
-	DrawVerts(verts, sides)
 }
 
-func DrawVerts2(verts []float32) {
-	sz := len(verts) / (9 * 4)
-	gl.Begin(gl.QUADS)
-	i := 0
+func DrawQuads(verts []float32) {
 	vstep := 9
-	nextlevel := 4 * vstep
-	for p := 0; p < sz; p++ {
+	nextQuad := 4 * vstep
+	quadCount := len(verts) / nextQuad
+	i := 0
+
+	gl.Begin(gl.QUADS)
+	for q := 0; q < quadCount; q++ {
 		drawQuad(verts, i)
 		drawQuad(verts, i+vstep)
 		drawQuad(verts, i+vstep*2)
 		drawQuad(verts, i+vstep*3)
-		i += nextlevel
+		i += nextQuad
 	}
 	gl.End()
 }
 
-func DrawVerts(verts []float32, edges int) {
+func DrawSharedQuads(verts []float32, edges int) {
 	vstep := 9
-	sz := (len(verts) / vstep) / (edges + 1)
+	nextLevel := int(edges+1) * vstep //There's an extra edge for the quads to seamlessly join
+	pathLength := len(verts) / nextLevel
+
 	gl.Begin(gl.QUADS)
-	i := 0
-
-	nextLevel := int(edges+1) * vstep
-
-	for p := 0; p < sz-1; p++ {
-		i = p * nextLevel
-		for r := 0; r < edges; r++ {
+	for p := 0; p < pathLength-1; p++ {
+		i := p * nextLevel
+		for e := 0; e < edges; e++ {
 			drawQuad(verts, i+vstep)
 			drawQuad(verts, i)
 			drawQuad(verts, i+nextLevel)
@@ -150,156 +146,133 @@ func drawQuad(verts []float32, i int) {
 }
 
 func (c *Shape) CreatePlane() []float32 {
-	verts := []float32{}
-	verts = append(verts, storeVNTC2(0, vec3{-c.w, -c.h, 0}, vec3{0, 0, 1}, vec2{0, 0})...)
-	verts = append(verts, storeVNTC2(1, vec3{c.w, -c.h, 0}, vec3{0, 0, 1}, vec2{1, 0})...)
-	verts = append(verts, storeVNTC2(2, vec3{c.w, c.h, 0}, vec3{0, 0, 1}, vec2{1, 1})...)
-	verts = append(verts, storeVNTC2(3, vec3{-c.w, c.h, 0}, vec3{0, 0, 1}, vec2{0, 1})...)
-	return verts
+	if c.verts != nil {
+		return c.verts
+	}
+	c.verts = []float32{}
+	c.verts = append(c.verts, storeVNTC2(0, vec3{-c.w, -c.h, 0}, vec3{0, 0, 1}, vec2{0, 0})...)
+	c.verts = append(c.verts, storeVNTC2(1, vec3{c.w, -c.h, 0}, vec3{0, 0, 1}, vec2{1, 0})...)
+	c.verts = append(c.verts, storeVNTC2(2, vec3{c.w, c.h, 0}, vec3{0, 0, 1}, vec2{1, 1})...)
+	c.verts = append(c.verts, storeVNTC2(3, vec3{-c.w, c.h, 0}, vec3{0, 0, 1}, vec2{0, 1})...)
+	return c.verts
 }
 
 func (c *Shape) CreateCuboid() []float32 {
-	verts := []float32{}
-	verts = append(verts, storeVNTC2(0, vec3{-c.w, -c.h, c.d}, vec3{0, 0, 1}, vec2{0, 0})...)
-	verts = append(verts, storeVNTC2(1, vec3{c.w, -c.h, c.d}, vec3{0, 0, 1}, vec2{1, 0})...)
-	verts = append(verts, storeVNTC2(2, vec3{c.w, c.h, c.d}, vec3{0, 0, 1}, vec2{1, 1})...)
-	verts = append(verts, storeVNTC2(3, vec3{-c.w, c.h, c.d}, vec3{0, 0, 1}, vec2{0, 1})...)
+	if c.verts != nil {
+		return c.verts
+	}
+	c.verts = []float32{}
+	c.verts = append(c.verts, storeVNTC2(0, vec3{-c.w, -c.h, c.d}, vec3{0, 0, 1}, vec2{0, 0})...)
+	c.verts = append(c.verts, storeVNTC2(1, vec3{c.w, -c.h, c.d}, vec3{0, 0, 1}, vec2{1, 0})...)
+	c.verts = append(c.verts, storeVNTC2(2, vec3{c.w, c.h, c.d}, vec3{0, 0, 1}, vec2{1, 1})...)
+	c.verts = append(c.verts, storeVNTC2(3, vec3{-c.w, c.h, c.d}, vec3{0, 0, 1}, vec2{0, 1})...)
 
-	verts = append(verts, storeVNTC2(4, vec3{-c.w, -c.h, -c.d}, vec3{0, 0, -1}, vec2{1, 0})...)
-	verts = append(verts, storeVNTC2(5, vec3{-c.w, c.h, -c.d}, vec3{0, 0, -1}, vec2{1, 1})...)
-	verts = append(verts, storeVNTC2(6, vec3{c.w, c.h, -c.d}, vec3{0, 0, -1}, vec2{0, 1})...)
-	verts = append(verts, storeVNTC2(7, vec3{c.w, -c.h, -c.d}, vec3{0, 0, -1}, vec2{0, 0})...)
+	c.verts = append(c.verts, storeVNTC2(4, vec3{-c.w, -c.h, -c.d}, vec3{0, 0, -1}, vec2{1, 0})...)
+	c.verts = append(c.verts, storeVNTC2(5, vec3{-c.w, c.h, -c.d}, vec3{0, 0, -1}, vec2{1, 1})...)
+	c.verts = append(c.verts, storeVNTC2(6, vec3{c.w, c.h, -c.d}, vec3{0, 0, -1}, vec2{0, 1})...)
+	c.verts = append(c.verts, storeVNTC2(7, vec3{c.w, -c.h, -c.d}, vec3{0, 0, -1}, vec2{0, 0})...)
 
-	verts = append(verts, storeVNTC2(8, vec3{-c.w, c.h, -c.d}, vec3{0, 1, 0}, vec2{0, 1})...)
-	verts = append(verts, storeVNTC2(9, vec3{-c.w, c.h, c.d}, vec3{0, 1, 0}, vec2{0, 0})...)
-	verts = append(verts, storeVNTC2(10, vec3{c.w, c.h, c.d}, vec3{0, 1, 0}, vec2{1, 0})...)
-	verts = append(verts, storeVNTC2(11, vec3{c.w, c.h, -c.d}, vec3{0, 1, 0}, vec2{1, 1})...)
+	c.verts = append(c.verts, storeVNTC2(8, vec3{-c.w, c.h, -c.d}, vec3{0, 1, 0}, vec2{0, 1})...)
+	c.verts = append(c.verts, storeVNTC2(9, vec3{-c.w, c.h, c.d}, vec3{0, 1, 0}, vec2{0, 0})...)
+	c.verts = append(c.verts, storeVNTC2(10, vec3{c.w, c.h, c.d}, vec3{0, 1, 0}, vec2{1, 0})...)
+	c.verts = append(c.verts, storeVNTC2(11, vec3{c.w, c.h, -c.d}, vec3{0, 1, 0}, vec2{1, 1})...)
 
-	verts = append(verts, storeVNTC2(8, vec3{-c.w, -c.h, -c.d}, vec3{0, -1, 0}, vec2{1, 1})...)
-	verts = append(verts, storeVNTC2(9, vec3{c.w, -c.h, -c.d}, vec3{0, -1, 0}, vec2{0, 1})...)
-	verts = append(verts, storeVNTC2(10, vec3{c.w, -c.h, c.d}, vec3{0, -1, 0}, vec2{0, 0})...)
-	verts = append(verts, storeVNTC2(11, vec3{-c.w, -c.h, c.d}, vec3{0, -1, 0}, vec2{1, 0})...)
+	c.verts = append(c.verts, storeVNTC2(8, vec3{-c.w, -c.h, -c.d}, vec3{0, -1, 0}, vec2{1, 1})...)
+	c.verts = append(c.verts, storeVNTC2(9, vec3{c.w, -c.h, -c.d}, vec3{0, -1, 0}, vec2{0, 1})...)
+	c.verts = append(c.verts, storeVNTC2(10, vec3{c.w, -c.h, c.d}, vec3{0, -1, 0}, vec2{0, 0})...)
+	c.verts = append(c.verts, storeVNTC2(11, vec3{-c.w, -c.h, c.d}, vec3{0, -1, 0}, vec2{1, 0})...)
 
-	verts = append(verts, storeVNTC2(8, vec3{c.w, -c.h, -c.d}, vec3{1, 0, 0}, vec2{1, 0})...)
-	verts = append(verts, storeVNTC2(9, vec3{c.w, c.h, -c.d}, vec3{1, 0, 0}, vec2{1, 1})...)
-	verts = append(verts, storeVNTC2(10, vec3{c.w, c.h, c.d}, vec3{1, 0, 0}, vec2{0, 1})...)
-	verts = append(verts, storeVNTC2(11, vec3{c.w, -c.h, c.d}, vec3{1, 0, 0}, vec2{0, 0})...)
+	c.verts = append(c.verts, storeVNTC2(8, vec3{c.w, -c.h, -c.d}, vec3{1, 0, 0}, vec2{1, 0})...)
+	c.verts = append(c.verts, storeVNTC2(9, vec3{c.w, c.h, -c.d}, vec3{1, 0, 0}, vec2{1, 1})...)
+	c.verts = append(c.verts, storeVNTC2(10, vec3{c.w, c.h, c.d}, vec3{1, 0, 0}, vec2{0, 1})...)
+	c.verts = append(c.verts, storeVNTC2(11, vec3{c.w, -c.h, c.d}, vec3{1, 0, 0}, vec2{0, 0})...)
 
-	verts = append(verts, storeVNTC2(8, vec3{-c.w, -c.h, -c.d}, vec3{-1, 0, 0}, vec2{0, 0})...)
-	verts = append(verts, storeVNTC2(9, vec3{-c.w, -c.h, c.d}, vec3{-1, 0, 0}, vec2{1, 0})...)
-	verts = append(verts, storeVNTC2(10, vec3{-c.w, c.h, c.d}, vec3{-1, 0, 0}, vec2{1, 1})...)
-	verts = append(verts, storeVNTC2(11, vec3{-c.w, c.h, -c.d}, vec3{-1, 0, 0}, vec2{0, 1})...)
+	c.verts = append(c.verts, storeVNTC2(8, vec3{-c.w, -c.h, -c.d}, vec3{-1, 0, 0}, vec2{0, 0})...)
+	c.verts = append(c.verts, storeVNTC2(9, vec3{-c.w, -c.h, c.d}, vec3{-1, 0, 0}, vec2{1, 0})...)
+	c.verts = append(c.verts, storeVNTC2(10, vec3{-c.w, c.h, c.d}, vec3{-1, 0, 0}, vec2{1, 1})...)
+	c.verts = append(c.verts, storeVNTC2(11, vec3{-c.w, c.h, -c.d}, vec3{-1, 0, 0}, vec2{0, 1})...)
 
-	return verts
+	return c.verts
 }
 
-// func (c *Shape) DrawCuboid() {
-
-// 	gl.Begin(gl.QUADS)
-
-// 	gl.Normal3f(0, 0, 1)
-// 	gl.TexCoord2f(0, 0)
-// 	gl.Vertex3f(-c.w, -c.h, c.d)
-// 	gl.TexCoord2f(1, 0)
-// 	gl.Vertex3f(c.w, -c.h, c.d)
-// 	gl.TexCoord2f(1, 1)
-// 	gl.Vertex3f(c.w, c.h, c.d)
-// 	gl.TexCoord2f(0, 1)
-// 	gl.Vertex3f(-c.w, c.h, c.d)
-
-// 	gl.Normal3f(0, 0, -1)
-// 	gl.TexCoord2f(1, 0)
-// 	gl.Vertex3f(-c.w, -c.h, -c.d)
-// 	gl.TexCoord2f(1, 1)
-// 	gl.Vertex3f(-c.w, c.h, -c.d)
-// 	gl.TexCoord2f(0, 1)
-// 	gl.Vertex3f(c.w, c.h, -c.d)
-// 	gl.TexCoord2f(0, 0)
-// 	gl.Vertex3f(c.w, -c.h, -c.d)
-
-// 	gl.Normal3f(0, 1, 0)
-// 	gl.TexCoord2f(0, 1)
-// 	gl.Vertex3f(-c.w, c.h, -c.d)
-// 	gl.TexCoord2f(0, 0)
-// 	gl.Vertex3f(-c.w, c.h, c.d)
-// 	gl.TexCoord2f(1, 0)
-// 	gl.Vertex3f(c.w, c.h, c.d)
-// 	gl.TexCoord2f(1, 1)
-// 	gl.Vertex3f(c.w, c.h, -c.d)
-
-// 	gl.Normal3f(0, -1, 0)
-// 	gl.TexCoord2f(1, 1)
-// 	gl.Vertex3f(-c.w, -c.h, -c.d)
-// 	gl.TexCoord2f(0, 1)
-// 	gl.Vertex3f(c.w, -c.h, -c.d)
-// 	gl.TexCoord2f(0, 0)
-// 	gl.Vertex3f(c.w, -c.h, c.d)
-// 	gl.TexCoord2f(1, 0)
-// 	gl.Vertex3f(-c.w, -c.h, c.d)
-
-// 	gl.Normal3f(1, 0, 0)
-// 	gl.TexCoord2f(1, 0)
-// 	gl.Vertex3f(c.w, -c.h, -c.d)
-// 	gl.TexCoord2f(1, 1)
-// 	gl.Vertex3f(c.w, c.h, -c.d)
-// 	gl.TexCoord2f(0, 1)
-// 	gl.Vertex3f(c.w, c.h, c.d)
-// 	gl.TexCoord2f(0, 0)
-// 	gl.Vertex3f(c.w, -c.h, c.d)
-
-// 	gl.Normal3f(-1, 0, 0)
-// 	gl.TexCoord2f(0, 0)
-// 	gl.Vertex3f(-c.w, -c.h, -c.d)
-// 	gl.TexCoord2f(1, 0)
-// 	gl.Vertex3f(-c.w, -c.h, c.d)
-// 	gl.TexCoord2f(1, 1)
-// 	gl.Vertex3f(-c.w, c.h, c.d)
-// 	gl.TexCoord2f(0, 1)
-// 	gl.Vertex3f(-c.w, c.h, -c.d)
-
-// 	gl.End()
-// }
-
-func (c *Shape) CreateTube(innerRadius, outerRadius, height float32, sides int) []float32 {
+func (c *Shape) CreateTube() []float32 {
+	if c.verts != nil {
+		return c.verts
+	}
 	c.path = make([]vec2, 5)
-	c.path[0] = vec2{innerRadius, height / 2}
-	c.path[1] = vec2{outerRadius, height / 2}
-	c.path[2] = vec2{outerRadius, -height / 2}
-	c.path[3] = vec2{innerRadius, -height / 2}
-	c.path[4] = vec2{innerRadius, height / 2}
-	return CreateLathe(c.path, 1, 0, 2*math32.Pi, 0, uint32(sides), 0, vec3{0, 0, 0})
+	c.path[0] = vec2{c.w, c.d / 2}
+	c.path[1] = vec2{c.h, c.d / 2}
+	c.path[2] = vec2{c.h, -c.d / 2}
+	c.path[3] = vec2{c.w, -c.d / 2}
+	c.path[4] = vec2{c.w, c.d / 2}
+	c.verts = CreateLathe(c.path, 1, 0, 2*math32.Pi, 0, uint32(c.edges), 0, vec3{0, 0, 0})
+	return c.verts
 }
 
-func (c *Shape) CreateTCone(radius, radius2, height float32, sides int) []float32 {
-	c.path = make([]vec2, 4)
-	c.path[0] = vec2{0.001, height / 2}
-	c.path[1] = vec2{radius, height / 2}
-	c.path[2] = vec2{radius2, -height / 2}
-	c.path[3] = vec2{0.001, -height / 2}
-	return CreateLathe(c.path, 1, 0, 2*math32.Pi, 0, uint32(sides), 0, vec3{0, 0, 0})
+func (c *Shape) CreateCylinder() []float32 {
+	if c.verts != nil {
+		return c.verts
+	}
+	return CreateVCone(c.w, c.w, c.h, int(c.edges))
 }
 
-func (c *Shape) CreateTorus(radius, ringradius float32, ringdivs, sides int) []float32 {
+func (c *Shape) CreateCone() []float32 {
+	if c.verts != nil {
+		return c.verts
+	}
+	return CreateVCone(0.01, c.w, c.h, int(c.edges))
+}
+
+func (c *Shape) CreateTCone() []float32 {
+	if c.verts != nil {
+		return c.verts
+	}
+	return CreateVCone(c.w, c.d, c.h, int(c.edges))
+}
+
+func CreateVCone(radius, radius2, height float32, sides int) []float32 {
+	path := make([]vec2, 4)
+	path[0] = vec2{0.001, height / 2}
+	path[1] = vec2{radius, height / 2}
+	path[2] = vec2{radius2, -height / 2}
+	path[3] = vec2{0.001, -height / 2}
+	return CreateLathe(path, 1, 0, 2*math32.Pi, 0, uint32(sides), 0, vec3{0, 0, 0})
+}
+
+func (c *Shape) CreateTorus() []float32 {
+	if c.verts != nil {
+		return c.verts
+	}
+	radius := c.w
+	ringradius := c.h
+	ringdivs := int(c.d)
 	c.path = make([]vec2, ringdivs+1)
 	st := (math32.Pi * 2) / float32(ringdivs)
 	for r := 0; r <= ringdivs; r++ {
 		c.path[r] = vec2{radius + ringradius*math32.Sin(float32(r)*st), ringradius * math32.Cos(float32(r)*st)}
 	}
-	return CreateLathe(c.path, 1, 0, 2*math32.Pi, 0, uint32(sides), 0, vec3{0, 0, 0})
+	c.verts = CreateLathe(c.path, 1, 0, 2*math32.Pi, 0, uint32(c.edges), 0, vec3{0, 0, 0})
+	return c.verts
 }
 
-func (c *Shape) CreateSphere(radius, hemi float32, edges int, invert bool) []float32 {
-	c.path = make([]vec2, edges+1)
-	st := (math32.Pi * (1 - hemi)) / float32(edges)
+func (c *Shape) CreateSphere() []float32 {
+	if c.verts != nil {
+		return c.verts
+	}
+	radius := c.w
+	hemi := c.h
+	c.path = make([]vec2, c.edges+1)
+	st := (math32.Pi * (1 - hemi)) / float32(c.edges)
 	ho := math32.Pi - (math32.Pi * (1 - hemi))
 	inv := float32(1)
-	if invert {
+	if c.d < 0 {
 		inv = -1
 	}
-	for r := 0; r <= edges; r++ {
+	for r := 0; r <= int(c.edges); r++ {
 		c.path[r] = vec2{radius * math32.Sin(float32(r)*st+ho) * inv, radius * math32.Cos(float32(r)*st+ho)}
 	}
-	return CreateLathe(c.path, 1, 0, 2*math32.Pi, 0, uint32(edges), 0, vec3{0, 0, 0})
+	c.verts = CreateLathe(c.path, 1, 0, 2*math32.Pi, 0, uint32(c.edges), 0, vec3{0, 0, 0})
+	return c.verts
 }
 
 func CreateLathe(lpath []vec2, inverted, startAngle, endAngle, rise float32, edges, uvtype uint32, pos vec3) []float32 {

@@ -83,8 +83,8 @@ func (s *Scene) Quit() {
 	sdl.Quit()
 }
 
-func (s *Scene) AddShape(name string, shape ShapeType, width, depth, height float32, position, rotation vec3, col uint32, textureFile string) {
-	newshape := NewShape(name, shape, width, depth, height, position, rotation, col, textureFile)
+func (s *Scene) AddShape(name string, shape ShapeType, width, depth, height float32, position, rotation vec3, edges, col uint32, textureFile string) {
+	newshape := NewShape(name, shape, width, depth, height, position, rotation, edges, col, textureFile)
 	if s.shapes == nil {
 		s.shapes = make(map[string]*Shape)
 	}
