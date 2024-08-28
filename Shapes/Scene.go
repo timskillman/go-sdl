@@ -51,7 +51,6 @@ func (s *Scene) Setup(title string, w, h int32) {
 	gl.Enable(gl.DEPTH_TEST)
 	gl.Enable(gl.LIGHTING)
 	gl.Enable(gl.CULL_FACE)
-	//gl.Enable(gl.BACK)
 
 	gl.ClearColor(0.5, 0.5, 0.5, 0.0)
 	gl.ClearDepth(1)
@@ -89,7 +88,6 @@ func (s *Scene) AddShape(name string, shape ShapeType, width, depth, height floa
 		s.shapes = make(map[string]*Shape)
 	}
 	s.shapes[name] = &newshape
-	//s.shapes[name] = NewShape(shape, width, depth, height, position, rotation, col, textureFile)
 }
 
 func (s *Scene) Draw() {
