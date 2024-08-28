@@ -1,6 +1,8 @@
 # go-sdl
 Experiments with Golang and SDL2
 
+![alt text](https://github.com/timskillman/go-sdl/blob/main/Resources/images/screenshot.jpg "Shapes screenshot")
+
 ## Why?
 
 Very simply I wanted to get SDL2 up and running using Go and found it wasn't straight forward (Aug '24) using the following setup;
