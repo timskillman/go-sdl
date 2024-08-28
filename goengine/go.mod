@@ -1,4 +1,4 @@
-module sdltest
+module goengine
 
 go 1.22.5
 

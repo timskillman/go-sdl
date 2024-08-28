@@ -1,4 +1,4 @@
-package main
+package goengine
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
@@ -22,9 +22,9 @@ func (m Mouse) GetDelta(x, y int32) (int32, int32) {
 }
 
 type UserInput struct {
-	mouse     Mouse
-	quit      bool
-	playerPos vec3
+	Mouse     Mouse
+	Quit      bool
+	PlayerPos Vec3
 }
 
 func (ui *UserInput) GetUserInput() {
@@ -32,34 +32,34 @@ func (ui *UserInput) GetUserInput() {
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 		switch ev := event.(type) {
 		case *sdl.QuitEvent:
-			ui.quit = true
+			ui.Quit = true
 		case *sdl.MouseMotionEvent:
-			ui.mouse.LeftButton = (ev.State == sdl.BUTTON_LEFT)
-			ui.mouse.RightButton = (ev.State == sdl.BUTTON_RIGHT)
-			ui.mouse.MiddleButton = (ev.State == sdl.BUTTON_MIDDLE)
+			ui.Mouse.LeftButton = (ev.State == sdl.BUTTON_LEFT)
+			ui.Mouse.RightButton = (ev.State == sdl.BUTTON_RIGHT)
+			ui.Mouse.MiddleButton = (ev.State == sdl.BUTTON_MIDDLE)
 
-			if ui.mouse.LeftButton {
-				x, y := ui.mouse.GetDelta(ev.X, ev.Y)
-				ui.playerPos.x -= float32(x)
-				ui.playerPos.y += float32(y)
+			if ui.Mouse.LeftButton {
+				x, y := ui.Mouse.GetDelta(ev.X, ev.Y)
+				ui.PlayerPos.X -= float32(x)
+				ui.PlayerPos.Y += float32(y)
 			}
-			ui.mouse.SetCoords(ev.X, ev.Y)
+			ui.Mouse.SetCoords(ev.X, ev.Y)
 
 		case *sdl.MouseWheelEvent:
-			ui.playerPos.z += float32(ev.Y)
+			ui.PlayerPos.Z += float32(ev.Y)
 		case *sdl.KeyboardEvent:
 			if ev.State == sdl.PRESSED {
 				switch ev.Keysym.Sym {
 				case sdl.K_LEFT:
-					ui.playerPos.x -= 4
+					ui.PlayerPos.X -= 4
 				case sdl.K_RIGHT:
-					ui.playerPos.x += 4
+					ui.PlayerPos.X += 4
 				case sdl.K_UP:
-					ui.playerPos.y -= 4
+					ui.PlayerPos.Y -= 4
 				case sdl.K_DOWN:
-					ui.playerPos.y += 4
+					ui.PlayerPos.Y += 4
 				case sdl.K_ESCAPE:
-					ui.quit = true
+					ui.Quit = true
 				}
 			}
 			if ev.State == sdl.RELEASED {

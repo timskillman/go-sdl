@@ -1,4 +1,4 @@
-package main
+package goengine
 
 import (
 	"unsafe"
@@ -27,15 +27,15 @@ func (m *Mesh) Init() {
 	m.mode = gl.TRIANGLES
 }
 
-func (m *Mesh) AddPackedVert(pos vec3, normal vec3, uv vec2, col uint32) {
-	m.verts = append(m.verts, pos.x)
-	m.verts = append(m.verts, pos.y)
-	m.verts = append(m.verts, pos.z)
-	m.verts = append(m.verts, normal.x)
-	m.verts = append(m.verts, normal.y)
-	m.verts = append(m.verts, normal.z)
-	m.verts = append(m.verts, uv.x)
-	m.verts = append(m.verts, uv.y)
+func (m *Mesh) AddPackedVert(pos Vec3, normal Vec3, uv Vec2, col uint32) {
+	m.verts = append(m.verts, pos.X)
+	m.verts = append(m.verts, pos.Y)
+	m.verts = append(m.verts, pos.Z)
+	m.verts = append(m.verts, normal.X)
+	m.verts = append(m.verts, normal.Y)
+	m.verts = append(m.verts, normal.Z)
+	m.verts = append(m.verts, uv.X)
+	m.verts = append(m.verts, uv.Y)
 	m.verts = append(m.verts, convertColToFloat(col))
 }
 
