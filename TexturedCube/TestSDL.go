@@ -9,7 +9,7 @@ func main() {
 
 	scene.AddShape("cube1", cuboidShape, 3, 3, 3, vec3{-7, -10, -20}, vec3{0, 0, 0}, 0xff00ffff, "redsky.png")
 	scene.AddShape("plane1", planeShape, 5, 0, 5, vec3{7, -10, -20}, vec3{0, 0, 0}, 0xff00ffff, "me.png")
-	scene.AddShape("sphere1", sphereShape, 5, 3, 20, vec3{-7, 0, -20}, vec3{0, 0.5, 0.5}, 0xff00ffff, "spanel.png")
+	scene.AddShape("sphere1", sphereShape, 5, 3, 60, vec3{-7, 0, -20}, vec3{0, 0.5, 0.5}, 0xff00ffff, "spanel.png")
 	scene.AddShape("torus1", torusShape, 5, 2, 30, vec3{7, 0, -20}, vec3{0, 0.5, 0.5}, 0xff00ffff, "spanel.png")
 	scene.AddShape("tube1", tubeShape, 2, 4, 6, vec3{10, 10, -20}, vec3{0, 0.5, 0.5}, 0xff00ffff, "spanel.png")
 	scene.AddShape("cylinder1", cylinderShape, 3, 5, 20, vec3{0, 10, -20}, vec3{0, 0.5, 0.5}, 0xff00ffff, "me.png")

@@ -123,18 +123,20 @@ func DrawVerts2(verts []float32) {
 }
 
 func DrawVerts(verts []float32, edges int) {
-	sz := (len(verts) / 9) / (edges + 1)
+	vstep := 9
+	sz := (len(verts) / vstep) / (edges + 1)
 	gl.Begin(gl.QUADS)
 	i := 0
-	vstep := 9
-	nextLevel := int(edges) * vstep
+
+	nextLevel := int(edges+1) * vstep
 
 	for p := 0; p < sz-1; p++ {
-		for r := 0; r <= edges; r++ {
-			drawQuad(verts, i)
+		i = p * nextLevel
+		for r := 0; r < edges; r++ {
 			drawQuad(verts, i+vstep)
-			drawQuad(verts, i+vstep+nextLevel)
+			drawQuad(verts, i)
 			drawQuad(verts, i+nextLevel)
+			drawQuad(verts, i+vstep+nextLevel)
 			i += vstep
 		}
 	}

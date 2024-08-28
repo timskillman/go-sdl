@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -48,6 +50,8 @@ func (s *Scene) Setup(title string, w, h int32) {
 
 	gl.Enable(gl.DEPTH_TEST)
 	gl.Enable(gl.LIGHTING)
+	gl.Enable(gl.CULL_FACE)
+	//gl.Enable(gl.BACK)
 
 	gl.ClearColor(0.5, 0.5, 0.5, 0.0)
 	gl.ClearDepth(1)
@@ -100,5 +104,6 @@ func (s *Scene) Shape(name string) *Shape {
 	if ok {
 		return shape
 	}
-	return nil
+	log.Println("Shape '" + name + "' does not exist. Ignoring")
+	return &Shape{}
 }
