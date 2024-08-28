@@ -18,6 +18,7 @@ const (
 	torusShape
 	latheShape
 	extrudeShape
+	springShape
 )
 
 type Shape struct {
@@ -57,6 +58,8 @@ func NewShape(name string, shape ShapeType, width, height, depth float32, positi
 		colour:    col,
 		texture:   tex,
 		verts:     nil,
+		path:      nil,
+		group:     nil,
 	}
 }
 
@@ -98,6 +101,8 @@ func (s *Shape) Draw() {
 		DrawSharedQuads(s.CreateTube(), int(s.edges))
 	case torusShape:
 		DrawSharedQuads(s.CreateTorus(), int(s.edges))
+	case springShape:
+		DrawSharedQuads(s.CreateSpring(), int(s.edges))
 	case latheShape:
 	case extrudeShape:
 	}
@@ -232,10 +237,10 @@ func (c *Shape) CreateTCone() []float32 {
 
 func CreateVCone(radius, radius2, height float32, sides int) []float32 {
 	path := make([]vec2, 4)
-	path[0] = vec2{0.001, height / 2}
+	path[0] = vec2{0.01, height / 2}
 	path[1] = vec2{radius, height / 2}
 	path[2] = vec2{radius2, -height / 2}
-	path[3] = vec2{0.001, -height / 2}
+	path[3] = vec2{0.01, -height / 2}
 	return CreateLathe(path, 1, 0, 2*math32.Pi, 0, uint32(sides), 0, vec3{0, 0, 0})
 }
 
@@ -264,14 +269,27 @@ func (c *Shape) CreateSphere() []float32 {
 	c.path = make([]vec2, c.edges+1)
 	st := (math32.Pi * (1 - hemi)) / float32(c.edges)
 	ho := math32.Pi - (math32.Pi * (1 - hemi))
-	inv := float32(1)
-	if c.d < 0 {
-		inv = -1
-	}
+
 	for r := 0; r <= int(c.edges); r++ {
-		c.path[r] = vec2{radius * math32.Sin(float32(r)*st+ho) * inv, radius * math32.Cos(float32(r)*st+ho)}
+		c.path[r] = vec2{radius * math32.Sin(float32(r)*st+ho) * sign(c.d), radius * math32.Cos(float32(r)*st+ho)}
 	}
 	c.verts = CreateLathe(c.path, 1, 0, 2*math32.Pi, 0, uint32(c.edges), 0, vec3{0, 0, 0})
+	return c.verts
+}
+
+func (c *Shape) CreateSpring() []float32 {
+	if c.verts != nil {
+		return c.verts
+	}
+	radius := c.w
+	ringradius := c.h
+	ringdivs := 12 //int(c.d)
+	c.path = make([]vec2, ringdivs+1)
+	st := (math32.Pi * 2) / float32(ringdivs)
+	for r := 0; r <= ringdivs; r++ {
+		c.path[r] = vec2{radius + ringradius*math32.Sin(float32(r)*st), ringradius * math32.Cos(float32(r)*st)}
+	}
+	c.verts = CreateLathe(c.path, 1, 0, 2*math32.Pi*10, c.d, uint32(c.edges), 0, vec3{0, 0, 0})
 	return c.verts
 }
 
@@ -404,10 +422,13 @@ func dotInvert(v1 vec2, v2 vec2, inverted float32) vec2 {
 
 func angleBetween(v1, v2 vec2) float32 {
 	prod := v1.x*v2.y - v1.y*v2.x
-	psign := float32(1)
-	if prod < 0 {
-		psign = -1
-	}
-	ab := psign * math32.Acos((v1.x*v2.x+v1.y*v2.y)/(v2.Length()*v2.Length()))
+	ab := sign(prod) * math32.Acos((v1.x*v2.x+v1.y*v2.y)/(v2.Length()*v2.Length()))
 	return math32.Abs(ab)
+}
+
+func sign(v float32) float32 {
+	if v < 0 {
+		return -1
+	}
+	return 1
 }
