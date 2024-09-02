@@ -5,6 +5,8 @@ import (
 	"github.com/go-gl/gl/v2.1/gl"
 )
 
+const VERTSIZE = 9
+
 type ShapeType int
 
 const (
@@ -109,7 +111,7 @@ func (s *Shape) Draw() {
 }
 
 func DrawQuads(verts []float32) {
-	vstep := 9
+	vstep := VERTSIZE
 	nextQuad := 4 * vstep
 	quadCount := len(verts) / nextQuad
 	i := 0
@@ -126,7 +128,7 @@ func DrawQuads(verts []float32) {
 }
 
 func DrawSharedQuads(verts []float32, edges int) {
-	vstep := 9
+	vstep := VERTSIZE
 	nextLevel := int(edges+1) * vstep //There's an extra edge for the quads to seamlessly join
 	pathLength := len(verts) / nextLevel
 
@@ -154,11 +156,12 @@ func (c *Shape) CreatePlane() []float32 {
 	if c.Verts != nil {
 		return c.Verts
 	}
+	col := 0xffffff
 	c.Verts = []float32{}
-	c.Verts = append(c.Verts, storeVNTC2(0, Vec3{-c.W, -c.H, 0}, Vec3{0, 0, 1}, Vec2{0, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(1, Vec3{c.W, -c.H, 0}, Vec3{0, 0, 1}, Vec2{1, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(2, Vec3{c.W, c.H, 0}, Vec3{0, 0, 1}, Vec2{1, 1})...)
-	c.Verts = append(c.Verts, storeVNTC2(3, Vec3{-c.W, c.H, 0}, Vec3{0, 0, 1}, Vec2{0, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, -c.H, 0}, Vec3{0, 0, 1}, Vec2{0, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, -c.H, 0}, Vec3{0, 0, 1}, Vec2{1, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, c.H, 0}, Vec3{0, 0, 1}, Vec2{1, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, c.H, 0}, Vec3{0, 0, 1}, Vec2{0, 1})...)
 	return c.Verts
 }
 
@@ -166,36 +169,38 @@ func (c *Shape) CreateCuboid() []float32 {
 	if c.Verts != nil {
 		return c.Verts
 	}
+	col := 0xffffff
+
 	c.Verts = []float32{}
-	c.Verts = append(c.Verts, storeVNTC2(0, Vec3{-c.W, -c.H, c.D}, Vec3{0, 0, 1}, Vec2{0, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(1, Vec3{c.W, -c.H, c.D}, Vec3{0, 0, 1}, Vec2{1, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(2, Vec3{c.W, c.H, c.D}, Vec3{0, 0, 1}, Vec2{1, 1})...)
-	c.Verts = append(c.Verts, storeVNTC2(3, Vec3{-c.W, c.H, c.D}, Vec3{0, 0, 1}, Vec2{0, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, -c.H, c.D}, Vec3{0, 0, 1}, Vec2{0, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, -c.H, c.D}, Vec3{0, 0, 1}, Vec2{1, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, c.H, c.D}, Vec3{0, 0, 1}, Vec2{1, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, c.H, c.D}, Vec3{0, 0, 1}, Vec2{0, 1})...)
 
-	c.Verts = append(c.Verts, storeVNTC2(4, Vec3{-c.W, -c.H, -c.D}, Vec3{0, 0, -1}, Vec2{1, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(5, Vec3{-c.W, c.H, -c.D}, Vec3{0, 0, -1}, Vec2{1, 1})...)
-	c.Verts = append(c.Verts, storeVNTC2(6, Vec3{c.W, c.H, -c.D}, Vec3{0, 0, -1}, Vec2{0, 1})...)
-	c.Verts = append(c.Verts, storeVNTC2(7, Vec3{c.W, -c.H, -c.D}, Vec3{0, 0, -1}, Vec2{0, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, -c.H, -c.D}, Vec3{0, 0, -1}, Vec2{1, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, c.H, -c.D}, Vec3{0, 0, -1}, Vec2{1, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, c.H, -c.D}, Vec3{0, 0, -1}, Vec2{0, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, -c.H, -c.D}, Vec3{0, 0, -1}, Vec2{0, 0})...)
 
-	c.Verts = append(c.Verts, storeVNTC2(8, Vec3{-c.W, c.H, -c.D}, Vec3{0, 1, 0}, Vec2{0, 1})...)
-	c.Verts = append(c.Verts, storeVNTC2(9, Vec3{-c.W, c.H, c.D}, Vec3{0, 1, 0}, Vec2{0, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(10, Vec3{c.W, c.H, c.D}, Vec3{0, 1, 0}, Vec2{1, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(11, Vec3{c.W, c.H, -c.D}, Vec3{0, 1, 0}, Vec2{1, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, c.H, -c.D}, Vec3{0, 1, 0}, Vec2{0, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, c.H, c.D}, Vec3{0, 1, 0}, Vec2{0, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, c.H, c.D}, Vec3{0, 1, 0}, Vec2{1, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, c.H, -c.D}, Vec3{0, 1, 0}, Vec2{1, 1})...)
 
-	c.Verts = append(c.Verts, storeVNTC2(8, Vec3{-c.W, -c.H, -c.D}, Vec3{0, -1, 0}, Vec2{1, 1})...)
-	c.Verts = append(c.Verts, storeVNTC2(9, Vec3{c.W, -c.H, -c.D}, Vec3{0, -1, 0}, Vec2{0, 1})...)
-	c.Verts = append(c.Verts, storeVNTC2(10, Vec3{c.W, -c.H, c.D}, Vec3{0, -1, 0}, Vec2{0, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(11, Vec3{-c.W, -c.H, c.D}, Vec3{0, -1, 0}, Vec2{1, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, -c.H, -c.D}, Vec3{0, -1, 0}, Vec2{1, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, -c.H, -c.D}, Vec3{0, -1, 0}, Vec2{0, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, -c.H, c.D}, Vec3{0, -1, 0}, Vec2{0, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, -c.H, c.D}, Vec3{0, -1, 0}, Vec2{1, 0})...)
 
-	c.Verts = append(c.Verts, storeVNTC2(8, Vec3{c.W, -c.H, -c.D}, Vec3{1, 0, 0}, Vec2{1, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(9, Vec3{c.W, c.H, -c.D}, Vec3{1, 0, 0}, Vec2{1, 1})...)
-	c.Verts = append(c.Verts, storeVNTC2(10, Vec3{c.W, c.H, c.D}, Vec3{1, 0, 0}, Vec2{0, 1})...)
-	c.Verts = append(c.Verts, storeVNTC2(11, Vec3{c.W, -c.H, c.D}, Vec3{1, 0, 0}, Vec2{0, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, -c.H, -c.D}, Vec3{1, 0, 0}, Vec2{1, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, c.H, -c.D}, Vec3{1, 0, 0}, Vec2{1, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, c.H, c.D}, Vec3{1, 0, 0}, Vec2{0, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{c.W, -c.H, c.D}, Vec3{1, 0, 0}, Vec2{0, 0})...)
 
-	c.Verts = append(c.Verts, storeVNTC2(8, Vec3{-c.W, -c.H, -c.D}, Vec3{-1, 0, 0}, Vec2{0, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(9, Vec3{-c.W, -c.H, c.D}, Vec3{-1, 0, 0}, Vec2{1, 0})...)
-	c.Verts = append(c.Verts, storeVNTC2(10, Vec3{-c.W, c.H, c.D}, Vec3{-1, 0, 0}, Vec2{1, 1})...)
-	c.Verts = append(c.Verts, storeVNTC2(11, Vec3{-c.W, c.H, -c.D}, Vec3{-1, 0, 0}, Vec2{0, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, -c.H, -c.D}, Vec3{-1, 0, 0}, Vec2{0, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, -c.H, c.D}, Vec3{-1, 0, 0}, Vec2{1, 0})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, c.H, c.D}, Vec3{-1, 0, 0}, Vec2{1, 1})...)
+	c.Verts = append(c.Verts, storeVNTC2(col, Vec3{-c.W, c.H, -c.D}, Vec3{-1, 0, 0}, Vec2{0, 1})...)
 
 	return c.Verts
 }
@@ -296,16 +301,13 @@ func (c *Shape) CreateSpring() []float32 {
 func CreateLathe(lpath []Vec2, inverted, startAngle, endAngle, rise float32, edges, uvtype uint32, pos Vec3) []float32 {
 
 	normals, path := calcPathNormals(lpath, 0.5, true, inverted)
-
-	sz := len(path)
-
 	angDiff := endAngle - startAngle
 	angStep := angDiff / float32(edges)
-
 	tcx, tcy, rdiv := 1/float32(edges), float32(0), rise/float32(edges)
 
+	//Find Y min/max for texture coords
 	miny, maxy := path[0].Y, path[0].Y
-	for p := 0; p < sz; p++ {
+	for p := 0; p < len(path); p++ {
 		if path[p].Y < miny {
 			miny = path[p].Y
 		}
@@ -317,7 +319,8 @@ func CreateLathe(lpath []Vec2, inverted, startAngle, endAngle, rise float32, edg
 	tc := 0
 
 	verts := []float32{}
-	for p := 0; p < sz; p++ {
+	for p := 0; p < len(path); p++ {
+
 		switch uvtype {
 		case 0: //cylinder map
 			tcy = 1 - ((path[p].Y - miny) / (maxy - miny))
@@ -331,24 +334,24 @@ func CreateLathe(lpath []Vec2, inverted, startAngle, endAngle, rise float32, edg
 		risey := path[p].Y
 
 		for r := 0; r < int(edges); r++ {
-			verts = append(verts, storeVNTC(p, tc, startAngle+float32(r)*angStep, risey, Vec2{tcx * float32(r), tcy}, pos, path, normals)...)
+			verts = append(verts, storeVNTClathe(p, tc, startAngle+float32(r)*angStep, risey, Vec2{tcx * float32(r), tcy}, pos, path, normals)...)
 			risey += rdiv
 		}
-		verts = append(verts, storeVNTC(p, tc, startAngle, risey, Vec2{0.9999, tcy}, pos, path, normals)...)
+		verts = append(verts, storeVNTClathe(p, tc, startAngle, risey, Vec2{0.9999, tcy}, pos, path, normals)...)
 	}
 
 	return verts
 }
 
-func storeVNTC(p, tc int, ang, risey float32, uv Vec2, pos Vec3, path, normals []Vec2) []float32 {
+func storeVNTClathe(p, col int, ang, risey float32, uv Vec2, pos Vec3, path, normals []Vec2) []float32 {
 	sinr, cosr := math32.Sin(ang), math32.Cos(ang)
 	v := Vec3{pos.X + path[p].X*sinr, pos.Y + risey, pos.Z + path[p].X*cosr}
 	n := Vec3{normals[p].X * sinr, normals[p].Y, normals[p].X * cosr}
-	return []float32{float32(tc), v.X, v.Y, v.Z, n.X, n.Y, n.Z, uv.X, uv.Y}
+	return []float32{float32(col), v.X, v.Y, v.Z, n.X, n.Y, n.Z, uv.X, uv.Y}
 }
 
-func storeVNTC2(tc int, pos, normal Vec3, uv Vec2) []float32 {
-	return []float32{float32(tc), pos.X, pos.Y, pos.Z, normal.X, normal.Y, normal.Z, uv.X, uv.Y}
+func storeVNTC2(col int, pos, normal Vec3, uv Vec2) []float32 {
+	return []float32{float32(col), pos.X, pos.Y, pos.Z, normal.X, normal.Y, normal.Z, uv.X, uv.Y}
 }
 
 func calcPathNormals(path []Vec2, creaseAngle float32, joined bool, inverted float32) ([]Vec2, []Vec2) {
