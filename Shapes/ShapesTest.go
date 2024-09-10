@@ -1,7 +1,7 @@
 package main
 
 import (
-	g "goengine"
+	g "github.com/timskillman/go-sdl/goengine"
 
 	"github.com/chewxy/math32"
 )
@@ -27,7 +27,6 @@ func main() {
 	scene.AddShape("spring1", g.ShapeSpring, 1.5, 0.2, 15, vec3{20, 0, -20}, vec3{0, 0.5, 0.5}, 180, 0xff00ffff, imageDir+"spanel.png")
 
 	zang := float32(0.0)
-	var s = scene.Shape("cube1")
 
 	userInput := g.UserInput{}
 	for !userInput.Quit {
@@ -35,8 +34,8 @@ func main() {
 
 		scene.Draw()
 
-		s = scene.Shape("cube1")
-		s.Rotation = vec3{s.Rotation.X + 3, s.Rotation.Y, s.Rotation.Z + 1}
+		var shape = scene.Shape("cube1")
+		shape.Rotation = vec3{shape.Rotation.X + 3, shape.Rotation.Y, shape.Rotation.Z + 1}
 
 		scene.Shape("plane1").Rotation.Z += 1
 		scene.Shape("plane1").Position.Z = math32.Cos(zang)*5 - 20
@@ -60,8 +59,8 @@ func main() {
 		scene.Shape("spring1").Rotation.Y += 3
 		scene.Shape("spring1").Rotation.X += 2
 
-		s = scene.Shape("cylinder1")
-		s.Rotation = vec3{s.Rotation.X + 0.5, s.Rotation.Y + 0.3, s.Rotation.Z + 0.1}
+		shape = scene.Shape("cylinder1")
+		shape.Rotation = vec3{shape.Rotation.X + 0.5, shape.Rotation.Y + 0.3, shape.Rotation.Z + 0.1}
 
 		scene.Window.GLSwap()
 	}

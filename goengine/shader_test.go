@@ -11,6 +11,8 @@ import (
 var window *sdl.Window
 var context sdl.GLContext
 
+const imageDir = "../Resources/images/"
+
 func TestGetAttrib(t *testing.T) {
 	vs := OpenTextFile("Resources/vs.txt")
 	attributes, err := GetAttributes(vs)
@@ -18,6 +20,28 @@ func TestGetAttrib(t *testing.T) {
 	if err != "" {
 		t.Error(err)
 	}
+}
+
+func TestShape(t *testing.T) {
+
+	scene := Scene{}
+	scene.Setup("SDL 3D Shapes", 800, 600)
+
+	scene.AddShape("cube1", ShapeCuboid, 3, 3, 3, Vec3{0, 0, -20}, Vec3{0, 0, 0}, 6, 0xff00ffff, imageDir+"redsky.png")
+
+	//userInput := UserInput{}
+	//for !userInput.Quit {
+	//userInput.GetUserInput()
+
+	scene.Draw()
+
+	var shape = scene.Shape("cube1")
+	shape.Rotation = Vec3{shape.Rotation.X + 3, shape.Rotation.Y, shape.Rotation.Z + 1}
+
+	scene.Window.GLSwap()
+	//}
+
+	scene.Quit()
 }
 
 func TestLoadShader(t *testing.T) {

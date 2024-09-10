@@ -77,6 +77,9 @@ func (s *Scene) Setup(title string, w, h int32) {
 }
 
 func (s *Scene) Quit() {
+	for _, t := range s.Textures {
+		gl.DeleteTextures(1, &t)
+	}
 	sdl.GLDeleteContext(s.Context)
 	s.Window.Destroy()
 	sdl.Quit()

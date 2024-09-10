@@ -58,7 +58,7 @@ func ActiveTexture(texID uint32, uniformId string, program uint32, texActive uin
 	texh := gl.GetUniformLocation(program, gl.Str(uniformId+"\x00"))
 	if texh >= 0 {
 		gl.ActiveTexture(gl.TEXTURE0 + texActive)
-		gl.BindTexture(uint32(texh), texActive)
+		gl.BindTexture(gl.TEXTURE_2D, texID)
 	}
 	return texh
 }

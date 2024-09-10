@@ -21,6 +21,7 @@ const (
 	ShapeLathe
 	ShapeExtrude
 	ShapeSpring
+	ShapeTriangles
 )
 
 type Shape struct {
@@ -38,6 +39,7 @@ type Shape struct {
 	Edges     uint32
 	Path      []Vec2
 	Verts     []float32
+	Indexes   []int
 	Group     []Shape
 }
 
@@ -60,6 +62,7 @@ func NewShape(name string, shape ShapeType, width, height, depth float32, positi
 		Colour:    col,
 		Texture:   tex,
 		Verts:     nil,
+		Indexes:   nil,
 		Path:      nil,
 		Group:     nil,
 	}
@@ -87,6 +90,8 @@ func (s *Shape) Draw() {
 	gl.BindTexture(gl.TEXTURE_2D, uint32(s.Texture.id))
 
 	switch s.ShapeType {
+	case ShapeTriangles:
+		s.DrawTriangles()
 	case ShapeCuboid:
 		DrawQuads(s.CreateCuboid())
 	case ShapePlane:
@@ -110,6 +115,16 @@ func (s *Shape) Draw() {
 	}
 }
 
+func (s *Shape) DrawTriangles() {
+	gl.Begin(gl.TRIANGLES)
+	for i := 0; i < len(s.Indexes); i += 3 {
+		drawVert(s.Verts, s.Indexes[i]*VERTSIZE)
+		drawVert(s.Verts, s.Indexes[i+1]*VERTSIZE)
+		drawVert(s.Verts, s.Indexes[i+2]*VERTSIZE)
+	}
+	gl.End()
+}
+
 func DrawQuads(verts []float32) {
 	vstep := VERTSIZE
 	nextQuad := 4 * vstep
@@ -118,10 +133,10 @@ func DrawQuads(verts []float32) {
 
 	gl.Begin(gl.QUADS)
 	for q := 0; q < quadCount; q++ {
-		drawQuad(verts, i)
-		drawQuad(verts, i+vstep)
-		drawQuad(verts, i+vstep*2)
-		drawQuad(verts, i+vstep*3)
+		drawVert(verts, i)
+		drawVert(verts, i+vstep)
+		drawVert(verts, i+vstep*2)
+		drawVert(verts, i+vstep*3)
 		i += nextQuad
 	}
 	gl.End()
@@ -136,17 +151,17 @@ func DrawSharedQuads(verts []float32, edges int) {
 	for p := 0; p < pathLength-1; p++ {
 		i := p * nextLevel
 		for e := 0; e < edges; e++ {
-			drawQuad(verts, i+vstep)
-			drawQuad(verts, i)
-			drawQuad(verts, i+nextLevel)
-			drawQuad(verts, i+vstep+nextLevel)
+			drawVert(verts, i+vstep)
+			drawVert(verts, i)
+			drawVert(verts, i+nextLevel)
+			drawVert(verts, i+vstep+nextLevel)
 			i += vstep
 		}
 	}
 	gl.End()
 }
 
-func drawQuad(verts []float32, i int) {
+func drawVert(verts []float32, i int) {
 	gl.Normal3f(verts[i+4], verts[i+5], verts[i+6])
 	gl.TexCoord2f(verts[i+7], verts[i+8])
 	gl.Vertex3f(verts[i+1], verts[i+2], verts[i+3])
